@@ -1,0 +1,36 @@
+[package]
+name = "jackpot"
+version = "0.1.0"
+description = "Pooled, winner-takes-all SOL jackpot wheel"
+license = "MIT"
+edition.workspace = true
+rust-version.workspace = true
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "jackpot"
+
+[features]
+default = []
+cpi = ["no-entrypoint"]
+no-entrypoint = []
+no-log-ix-name = []
+idl-build = ["anchor-lang/idl-build"]
+anchor-debug = []
+custom-heap = []
+custom-panic = []
+# TEST ONLY. Skips the MagicBlock VRF request and accepts callbacks signed by a fixed test identity.
+# Never deploy a build with this enabled.
+mock-randomness = []
+
+[dependencies]
+# `init-if-needed` (a feature of the existing crate, no new dependency): a player's per-round Ticket is created by
+# their first deposit.
+anchor-lang = { version = "1.2.1", features = ["init-if-needed"] }
+bytemuck = { version = "1.25.2", features = ["derive", "min_const_generics"] }
+
+[dev-dependencies]
+proptest = "1.12.0"
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(target_os, values("solana"))'] }
